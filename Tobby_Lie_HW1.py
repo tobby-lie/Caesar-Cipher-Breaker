@@ -29,22 +29,40 @@ def cipher_break():
 	"""Loop Caesar Cipher Code Breaker code until user inputs 'y' """
 	# Ask for input of cipher text to be used
 	cipher_text = input("Enter ciphertext: " + "\n")
+	# Holds original text in case of any capital characters
+	cipher_text_caps = cipher_text
 	cipher_text = cipher_text.lower()
 	# Call increment_letters in order to shift cipher text up by one letter
-	increment_letters(cipher_text)
+	cipher_text = increment_letters(cipher_text)
 	# While loop continues to increment cipher text by one until user
 	# Verifies that the text generated is correct
 	user_input = "n"
+	# Counts number of guesses
+	guesses = 0
 	while user_input != 'y':
- 		user_input = input("Is it " + '"' + str(cipher_text) + '"?')
- 		user_input.lower
+		counter = 0
+		# Create temporary list for cipher_text characters for
+		# Manipuation with isupper()
+		cipher_text_list = list(cipher_text)
+		for letter in cipher_text_caps:
+			if letter.isupper():
+				cipher_text_list[counter] = cipher_text_list[counter].upper()	
+			counter += 1
+		cipher_text_list = ''.join(cipher_text_list)
+		# Because of the above loop we can now print with consistency
+		# Maintaining case
+		user_input = input("Is it " + '"' + str(cipher_text_list) + '"?')
+		user_input.lower()
  		# While input is neither y or n continue to ask for input
  		# Input validation
- 		while user_input not in ['y', 'n']:
+		while user_input not in ['y', 'n']:
  			user_input = input("Please input either y or n!")
  			user_input = user_input.lower()
  		# If text is incorrect, then need to increment
- 		cipher_text = increment_letters(cipher_text)
+		cipher_text = cipher_text.lower()
+		cipher_text = increment_letters(cipher_text)
+		guesses += 1
+	return guesses
 
 def program_loop():
 	"""Loop cipher_break code until user exits"""
@@ -59,6 +77,8 @@ def program_loop():
 			user_input = input("Please input either y or n!")
 			user_input = user_input.lower()
 		if  user_input == 'y':
-			cipher_break()
+			num_guesses = cipher_break()
+			# Print out how many guesses it took
+			print("That took " + str(num_guesses) + " guesses!")
 
 program_loop()
