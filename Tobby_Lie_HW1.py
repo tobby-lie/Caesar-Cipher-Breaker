@@ -1,7 +1,9 @@
 # Caesar Cipher Code Breaker - HW1
 # Tobby Lie
 # CSCI 4742
-# Last changed: 8/20/19 @ 6:55PM
+# Last changed: 8/20/19 @ 7:38PM
+
+from collections import Counter
 
 def increment_letters(cipherText):
 	"""Take in ciphertext and increment each letter of word once"""
@@ -22,6 +24,37 @@ def increment_letters(cipherText):
 			continue
 		# Add newly incremented character to new_text string
 		new_text += chr(ascii_value + 1)
+	# Return new_text in order to be used as newly incremented word
+	return new_text
+
+def increment_letters_amount(cipherText, amount):
+	"""Take in ciphertext and increment each letter of word once"""
+	# Initialize string to empty string to hold value of incremented string
+	new_text = ""
+	# For loop to increment each character in string by one using ascii value
+	for letter in cipherText:
+		# Get ascii value of letter in cipherText
+		ascii_value = ord(letter)
+		# If letter is whitespace then skip increment and fill with space
+		if letter == " ":
+			new_text += " "
+			continue
+		# Add newly incremented character to new_text string
+		ascii_value += amount
+		if ascii_value > 122:
+			# Figure out how many ascii values out of bounds
+			# The new ascii value is 
+			offset = ascii_value - 122
+			# The ascii value will now start at 140 (one character before 'a')
+			# And increase by the offset calculated
+			ascii_value = 97 + (offset - 1)
+		elif ascii_value < 97:
+			offset = 97 - ascii_value
+
+			ascii_value = 122 - (offset - 1)
+
+		new_text += chr(ascii_value)
+
 	# Return new_text in order to be used as newly incremented word
 	return new_text
 
@@ -62,7 +95,41 @@ def cipher_break():
 		cipher_text = cipher_text.lower()
 		cipher_text = increment_letters(cipher_text)
 		guesses += 1
-	return guesses
+	return 
+
+def cipher_break_frequency():
+	
+	# Create list of letters in order of most used to least used
+	# Based on letterfrequency.org 
+	frequent_alpha = ['e', 't', 'a', 'o', 'i', 'n', 's', 'r', 'h', 'l', 'd',
+		'c', 'u', 'm', 'f', 'p', 'g', 'w', 'y', 'b', 'v', 'k', 'x', 'j', 'q', 'z']
+	# Ask for input of cipher text
+	cipher_text = input("Enter ciphertext: " + "\n")
+	# Holds original text in case of any capital characters
+	cipher_text_caps = cipher_text
+	cipher_text = cipher_text.lower()
+	# Turn string into list in order to traverse by index
+	cipher_text_list = list(cipher_text)
+
+	# Count most frequent appearing character in cipher_text
+	occurence_count = Counter(cipher_text_list)
+	most_frequent = occurence_count.most_common(2)
+	key =  most_frequent[0][0]
+	if key == " ":
+		key = most_frequent[1][0]
+		print(key)
+
+
+	# Increment word by first letter in list based on
+	# Most common letter in cipher_text
+	for index, alpha in enumerate(frequent_alpha):
+		offset = ord(frequent_alpha[index]) - ord(key)
+
+		new_word = increment_letters_amount(cipher_text, offset)
+		print(new_word + "\n")
+
+	# Calculate amount to offset by
+	#for alpha in frequent_alpha:
 
 def program_loop():
 	"""Loop cipher_break code until user exits"""
@@ -77,8 +144,9 @@ def program_loop():
 			user_input = input("Please input either y or n!")
 			user_input = user_input.lower()
 		if  user_input == 'y':
-			num_guesses = cipher_break()
+			cipher_break_frequency()
+			"""num_guesses = cipher_break()
 			# Print out how many guesses it took
-			print("That took " + str(num_guesses) + " guesses!")
+			print("That took " + str(num_guesses) + " guesses!")"""
 
 program_loop()
