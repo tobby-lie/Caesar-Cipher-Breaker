@@ -1,7 +1,7 @@
 # Caesar Cipher Code Breaker - HW1
 # Tobby Lie
 # CSCI 4742
-# Last changed: 8/20/19 @ 7:38PM
+# Last changed: 8/22/19 @ 6:20PM
 
 from collections import Counter
 
@@ -62,6 +62,8 @@ def cipher_break():
 	"""Loop Caesar Cipher Code Breaker code until user inputs 'y' """
 	# Ask for input of cipher text to be used
 	cipher_text = input("Enter ciphertext: " + "\n")
+	while cipher_text == "":
+		cipher_text = input("Must input ciphertext!: " + "\n")
 	# Holds original text in case of any capital characters
 	cipher_text_caps = cipher_text
 	cipher_text = cipher_text.lower()
@@ -95,16 +97,18 @@ def cipher_break():
 		cipher_text = cipher_text.lower()
 		cipher_text = increment_letters(cipher_text)
 		guesses += 1
-	return 
+	return guesses
 
 def cipher_break_frequency():
-	
 	# Create list of letters in order of most used to least used
 	# Based on letterfrequency.org 
 	frequent_alpha = ['e', 't', 'a', 'o', 'i', 'n', 's', 'r', 'h', 'l', 'd',
 		'c', 'u', 'm', 'f', 'p', 'g', 'w', 'y', 'b', 'v', 'k', 'x', 'j', 'q', 'z']
+
 	# Ask for input of cipher text
 	cipher_text = input("Enter ciphertext: " + "\n")
+	while cipher_text == "":
+		cipher_text = input("Must input ciphertext!: " + "\n")
 	# Holds original text in case of any capital characters
 	cipher_text_caps = cipher_text
 	cipher_text = cipher_text.lower()
@@ -117,36 +121,75 @@ def cipher_break_frequency():
 	key =  most_frequent[0][0]
 	if key == " ":
 		key = most_frequent[1][0]
-		print(key)
-
 
 	# Increment word by first letter in list based on
 	# Most common letter in cipher_text
+	count = 0
+	found = False
 	for index, alpha in enumerate(frequent_alpha):
+		count += 1
 		offset = ord(frequent_alpha[index]) - ord(key)
 
 		new_word = increment_letters_amount(cipher_text, offset)
-		print(new_word + "\n")
 
-	# Calculate amount to offset by
-	#for alpha in frequent_alpha:
+		counter = 0
+		# Create temporary list for new_word characters for
+		# Manipuation with isupper()
+		new_word_list = list(new_word)
+		for letter in cipher_text_caps:
+			if letter.isupper():
+				new_word_list[counter] = new_word_list[counter].upper()	
+			counter += 1
+		new_word_list = ''.join(new_word_list)
+
+		user_input = input('is it "' + new_word_list + '"?')
+		user_input = user_input.lower()
+		while user_input not in ['y', 'n']:
+ 			user_input = input("Please input either y or n!")
+ 			user_input = user_input.lower()
+		
+		if user_input == 'y':
+			break
+
+	return count
 
 def program_loop():
 	"""Loop cipher_break code until user exits"""
 	# Loops cipher_break until user is finished using program
 	# User can exit by inputting n
 	user_input = ""
-	while user_input != 'n':
-		prompt = "Would you like to use the Caesar Cipher Code Breaker?\n"
-		prompt += "(Input y or n):"
+	while user_input != '-1':
+		prompt = "-----------------------------------\n"
+		prompt += "What would you like to do?\n"
+		prompt += "-----------------------------------\n"
+		prompt += "1: Caesar Cipher Brute Force\n"
+		prompt += "2: Caesar Cipher Frequency Attack \n"
+		prompt += "-1: Exit\n"
+		prompt += "(Input 1, 2 or -1 to exit):\n"
+		prompt += "-----------------------------------\n"
 		user_input = input(prompt)
-		while user_input not in ['y', 'n']:
-			user_input = input("Please input either y or n!")
-			user_input = user_input.lower()
-		if  user_input == 'y':
-			cipher_break_frequency()
-			"""num_guesses = cipher_break()
-			# Print out how many guesses it took
-			print("That took " + str(num_guesses) + " guesses!")"""
 
+		# Input validation for user input of choice selection
+		while user_input not in ['1', '2', '-1']:
+			user_input = input("Please input 1, 2 or -1 to exit!")
+
+		if  user_input == '1':
+			num_guesses = cipher_break()
+			# Print out how many guesses it took
+			print("-------------------------------------------\n")
+			print("That took " + str(num_guesses) + " guesses!\n")
+			print("-------------------------------------------\n")
+		elif user_input == '2':
+			num_guesses = cipher_break_frequency()
+			# Print out how many guesses it took
+			print("-------------------------------------------\n")
+			print("That took " + str(num_guesses) + " guesses!\n")
+			print("-------------------------------------------\n")
+		elif user_input == '-1':
+			print("-----------------------------\n")
+			print("Thanks for using the program!\n")
+			print("-----------------------------\n")
+
+
+# Only need to have one function call to run program
 program_loop()
