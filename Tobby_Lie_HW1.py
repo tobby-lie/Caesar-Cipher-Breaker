@@ -150,7 +150,6 @@ def cipher_break_frequency():
 		
 		if user_input == 'y':
 			break
-
 	return count
 
 def program_loop():
